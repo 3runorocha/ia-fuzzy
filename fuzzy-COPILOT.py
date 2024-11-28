@@ -53,18 +53,18 @@ sistema_risco = ctrl.ControlSystemSimulation(sistema_risco_ctrl)
 
 # 5. Definir entradas pré-definidas adequadas às regras
 entradas = {
-    'experiencia': 2,  # baixa
-    'entrosamento': 8,  # alta
-    'rotatividade': 9,  # alta
-    'qualidade_requisitos': 2,  # baixa
-    'mudanca_requisitos': 9,  # alta
-    'complexidade': 8,  # alta
-    'tamanho': 2,  # baixa
-    'recursos': 9,  # alta
-    'orcamento': 2,  # baixa
-    'prazo': 2,  # baixa
-    'dependencias': 9,  # alta
-    'ambiguidade': 9,  # alta
+    'experiencia': 7,
+    'entrosamento': 6,
+    'rotatividade': 9,
+    'qualidade_requisitos': 1,
+    'mudanca_requisitos': 9,
+    'complexidade': 5,
+    'tamanho': 2,
+    'recursos': 7,
+    'orcamento': 1,
+    'prazo': 10,
+    'dependencias': 4,
+    'ambiguidade': 3
 }
 
 # Passando entradas para o sistema fuzzy
@@ -103,23 +103,18 @@ def funcao_pertinencia(x):
 # 7. Plotagem das funções de pertinência
 # Criar uma figura com subplots
 fig, axes = plt.subplots(nrows=4, ncols=3, figsize=(15, 10))
-
-# Ajustar a figura
 plt.subplots_adjust(hspace=0.5)
 
-# Dados de exemplo (substitua isso com suas variáveis reais)
-x = np.linspace(-10, 10, 400)
-variables = [funcao_pertinencia(x) for _ in range(12)]
-titles = ['Experiência', 'Entrosamento', 'Rotatividade', 'Qualidade dos Requisitos', 'Mudança nos Requisitos', 'Complexidade', 'Tamanho', 'Recursos', 'Orçamento', 'Prazo', 'Dependências', 'Ambiguidade']
-
 # Plotar as funções de pertinência
-for i, (var, title) in enumerate(zip(variables, titles)):
-    ax = axes[i // 3, i % 3]
-    ax.plot(x, var)
-    ax.set_title(f"Função de Pertinência - {title}")
-    ax.legend([title])
+for var, ax in zip([experiencia, entrosamento, rotatividade, qualidade_requisitos, mudanca_requisitos, 
+                    complexidade, tamanho, recursos, orcamento, prazo, dependencias, ambiguidade], axes.flatten()):
+    for label in var.terms:
+        ax.plot(var.universe, var[label].mf, label=label)
+        ax.axvline(entradas[var.label], color='r', linestyle='--')
+    ax.set_title(f"Função de Pertinência - {var.label.capitalize()}")
+    ax.legend()
 
-# Exibir as funções de pertinência para a saída calculada
+# Exibir o gráfico de funções de pertinência para a saída calculada
 risco.view(sim=sistema_risco)
 plt.title("Função de Pertinência - Risco (Simulação)")
 plt.xlabel("Nível de Risco")
